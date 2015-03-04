@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "Right-click translation",
+  "description": "Right-click translation",
+  "version": "1.0",
+  "icons": { "128": "128.png",
+             "16": "16.png" }, 
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "permissions": [
+    "tabs",
+    "contextMenus",
+    "https://translate.google.com.tw/"
+  ]
+}
