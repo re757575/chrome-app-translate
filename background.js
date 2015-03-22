@@ -23,15 +23,36 @@ function onClickHandler(info, tab) {
 
 function say(s) {
 	if (s) {
+		// 移除先前的
+		var beforeSay = document.getElementById('say');
+		if (beforeSay !== null) {
+			beforeSay.pause();
+			beforeSay.currentTime = 0;
+			beforeSay.remove();
+		}
+
 		var audio = document.createElement('audio');
 		audio.src = "http://tts-api.com/tts.mp3?q=" + encodeURIComponent(s);
 		var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
 		if (canPlayMP3) {
-		  audio.load();
-		  audio.play();
+			audio.id = 'say';
+			document.body.appendChild(audio);
+			audio.load();
+			audio.play();
 		}
 	}
 };
+
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+}
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+    for(var i = 0, len = this.length; i < len; i++) {
+        if(this[i] && this[i].parentElement) {
+            this[i].parentElement.removeChild(this[i]);
+        }
+    }
+}
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
