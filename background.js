@@ -17,16 +17,21 @@ function onClickHandler(info, tab) {
     } else {
 		console.log("語音轉換");
 		var q = info.selectionText;
-		console.log(document.body);
+		say(q);
+    }
+}
+
+function say(s) {
+	if (s) {
 		var audio = document.createElement('audio');
-		audio.src = "http://tts-api.com/tts.mp3?q=" + encodeURIComponent(q);
+		audio.src = "http://tts-api.com/tts.mp3?q=" + encodeURIComponent(s);
 		var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
 		if (canPlayMP3) {
 		  audio.load();
 		  audio.play();
 		}
-    }
-}
+	}
+};
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
