@@ -1,2 +1,2 @@
-# chrome-app-fetch-file
+# chrome-app-translate
 Right-click translation via GAS
