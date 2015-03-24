@@ -1,24 +1,23 @@
 ﻿
 function onClickHandler(info, tab) {
     console.log(info);
+    var q = info.selectionText;
     if (info.menuItemId === 'child1') {
 		console.log("中翻英");
-		var q = info.selectionText;
-		chrome.tabs.create({
-			"url" : "https://script.google.com/macros/s/AKfycbzVbbioKRcPimW2ZGN0kAEZKgDSqV2bZ44GIr6HDvQOy4lcpeM/exec?q="+q+"&source=zh-TW&target=en"
-		});
+		chrome.tabs.create(translate(q, 'zh-TW', 'en'));
     } else if (info.menuItemId === 'child2') {
 		console.log("英翻中");
-		var q = info.selectionText;
-		chrome.tabs.create({
-			//"url" : "https://translate.google.com.tw/?hl=zh-TW&tab=wT#en/zh-TW/" + st
-			"url" : "https://script.google.com/macros/s/AKfycbzVbbioKRcPimW2ZGN0kAEZKgDSqV2bZ44GIr6HDvQOy4lcpeM/exec?q="+q+"&source=en&target=zh-TW"
-		});
+		chrome.tabs.create(translate(q, 'en', 'zh-TW'));
     } else {
 		console.log("語音轉換");
-		var q = info.selectionText;
 		say(q);
     }
+}
+
+function translate(q, s, t) {
+	var q = encodeURIComponent(q);
+	var url = "https://script.google.com/macros/s/AKfycbzVbbioKRcPimW2ZGN0kAEZKgDSqV2bZ44GIr6HDvQOy4lcpeM/exec?q="+q+"&source="+s+"&target="+t;
+	return {'url' : url};
 }
 
 function say(s) {
@@ -41,7 +40,7 @@ function say(s) {
 			audio.play();
 		}
 	}
-};
+}
 
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
