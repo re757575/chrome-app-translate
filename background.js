@@ -87,7 +87,7 @@ function sayByGoogle(q,tl) {
         // google語音發音 一次最多100個字(包含空白),超出範圍會 404
         if ( textlen > 100) {
             alert('超出範圍');
-            return 0;
+            return false;
         }
 
         // 移除先前的
