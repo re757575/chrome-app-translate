@@ -38,27 +38,7 @@ function sayByTTS(s, callback) {
 
 		var audio = document.createElement('audio');
 
-        audio.addEventListener('error', function (e){
-
-            switch (e.target.error.code) {
-                case e.target.error.MEDIA_ERR_ABORTED:
-                    errorMsg = 'You aborted the video playback.';
-                    break;
-                case e.target.error.MEDIA_ERR_NETWORK:
-                    errorMsg = 'A network error caused the audio download to fail.';
-                    break;
-                case e.target.error.MEDIA_ERR_DECODE:
-                    errorMsg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
-                    break;
-                case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                    errorMsg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
-                    break;
-                default:
-                    errorMsg = 'An unknown error occurred.';
-                    break;
-            }
-            alert(errorMsg);
-        });
+        audio.addEventListener('error', audioError);
 
 		audio.src = "http://tts-api.com/tts.mp3?q=" + encodeURIComponent(s);
 		var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
@@ -100,27 +80,7 @@ function sayByGoogle(q,tl) {
 
         var audio = document.createElement('audio');
 
-        audio.addEventListener('error', function (e){
-
-            switch (e.target.error.code) {
-                case e.target.error.MEDIA_ERR_ABORTED:
-                    errorMsg = 'You aborted the video playback.';
-                    break;
-                case e.target.error.MEDIA_ERR_NETWORK:
-                    errorMsg = 'A network error caused the audio download to fail.';
-                    break;
-                case e.target.error.MEDIA_ERR_DECODE:
-                    errorMsg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
-                    break;
-                case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                    errorMsg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
-                    break;
-                default:
-                    errorMsg = 'An unknown error occurred.';
-                    break;
-            }
-            alert(errorMsg);
-        });
+        audio.addEventListener('error', audioError);
 
         audio.src = "https://translate.google.com.tw/translate_tts?ie=UTF-8&tl="+tl+"&q=" + encodeURIComponent(q);
         var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
@@ -131,6 +91,27 @@ function sayByGoogle(q,tl) {
             audio.play();
         }
     }
+}
+
+function audioError(e) {
+    switch (e.target.error.code) {
+        case e.target.error.MEDIA_ERR_ABORTED:
+            errorMsg = 'You aborted the video playback.';
+            break;
+        case e.target.error.MEDIA_ERR_NETWORK:
+            errorMsg = 'A network error caused the audio download to fail.';
+            break;
+        case e.target.error.MEDIA_ERR_DECODE:
+            errorMsg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
+            break;
+        case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            errorMsg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
+            break;
+        default:
+            errorMsg = 'An unknown error occurred.';
+            break;
+    }
+    alert(errorMsg);
 }
 
 Element.prototype.remove = function() {
