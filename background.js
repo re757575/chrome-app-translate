@@ -15,6 +15,9 @@ function onClickHandler(info, tab) {
         console.log("Google 英語語音 轉換");
         sayByGoogle(q,'en');
     } else if (info.menuItemId === 'child5') {
+        console.log("Siri 英語語音 轉換");
+        sayBySiri(q,'en');
+    } else if (info.menuItemId === 'child6') {
         console.log("Google 國語語音 轉換");
         sayByGoogle(q,'zh-TW');
     }
@@ -91,6 +94,44 @@ function sayByGoogle(q,tl) {
             audio.play();
         }
     }
+}
+
+function sayBySiri(q,tl) {
+
+    // 移除先前的
+    var beforeSay = document.getElementById('say');
+    if (beforeSay !== null) {
+        beforeSay.pause();
+        beforeSay.currentTime = 0;
+        beforeSay.remove();
+    }
+
+    var request = new XMLHttpRequest();
+    var url = 'https://montanaflynn-text-to-speech.p.mashape.com/speak?text='+q;
+    request.onreadystatechange = function() {
+        if (request.readyState == 4 && request.status == 200) {
+            console.log(request);
+
+            var blobURL = window.URL.createObjectURL(request.response);
+
+            var audio = document.createElement('audio');
+
+            audio.addEventListener('error', audioError);
+
+            audio.src = blobURL;
+            var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
+            if (canPlayMP3) {
+                audio.id = 'say';
+                document.body.appendChild(audio);
+                audio.load();
+                audio.play();
+            }
+        }
+    }
+    request.open("GET", url, true);
+    request.setRequestHeader("X-Mashape-Key", "aghfoB5ARumshraXxyE8R4xh3RhHp10gcATjsnJKXIqMenhqZZAlex");
+    request.responseType = 'blob';
+    request.send();
 }
 
 function audioError(e) {
@@ -173,9 +214,16 @@ chrome.runtime.onInstalled.addListener(function (details) {
     });
 
     chrome.contextMenus.create({
-        "title": "Google小姐-國語發音",
+        "title": "Apple小姐-英語發音",
         "parentId": "parent",
         "id": "child5",
+        contexts: ['selection']
+    });
+
+    chrome.contextMenus.create({
+        "title": "Google小姐-國語發音",
+        "parentId": "parent",
+        "id": "child6",
         contexts: ['selection']
     });
 
