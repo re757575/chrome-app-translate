@@ -25,7 +25,8 @@ function onClickHandler(info, tab) {
 
 function translate(q, s, t) {
 	var q = encodeURIComponent(q);
-	var url = "https://script.google.com/macros/s/AKfycbzVbbioKRcPimW2ZGN0kAEZKgDSqV2bZ44GIr6HDvQOy4lcpeM/exec?q="+q+"&source="+s+"&target="+t;
+	//var url = "https://script.google.com/macros/s/AKfycbzVbbioKRcPimW2ZGN0kAEZKgDSqV2bZ44GIr6HDvQOy4lcpeM/exec?q="+q+"&source="+s+"&target="+t;
+    var url = String.format("https://translate.google.com.tw/#{0}/{1}/{2}", s, t, q);
 	return {'url' : url};
 }
 
@@ -171,6 +172,19 @@ NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
 ﻿String.prototype.haveChinese = function() {
     return this.search(RegExp("[一-" + String.fromCharCode(40869) + "]")) > -1;
 };
+
+// 佔位符號
+if (!String.format) {
+    String.format = function(format) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return format.replace(/{(\d+)}/g, function(match, number) {
+          return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+          ;
+        });
+    };
+}
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
