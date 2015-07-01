@@ -1,6 +1,8 @@
-﻿
+﻿var playCount, replay;
+
 function onClickHandler(info, tab) {
     console.log(info);
+    playCount = 0;
     var q = info.selectionText;
     if (info.menuItemId === 'child1') {
 		console.log("中翻英");
@@ -13,10 +15,10 @@ function onClickHandler(info, tab) {
         sayByTTS(q);
     } else if (info.menuItemId === 'child4') {
         console.log("Google 英語語音 轉換");
-        sayByGoogle(q,'en');
+        sayByGoogle(q,'en','normal');
     } else if (info.menuItemId === 'child5') {
-        console.log("Siri 英語語音 轉換");
-        sayBySiri(q,'en');
+        console.log("Google 英語語音(慢速) 轉換 *5");
+        sayByGoogle(q,'en','slow');
     } else if (info.menuItemId === 'child6') {
         console.log("Google 國語語音 轉換");
         sayByGoogle(q,'zh-TW');
@@ -55,7 +57,7 @@ function sayByTTS(s, callback) {
 	}
 }
 
-function sayByGoogle(q,tl) {
+function sayByGoogle(q, tl, speed) {
 
     if (q) {
 
@@ -82,11 +84,26 @@ function sayByGoogle(q,tl) {
             beforeSay.remove();
         }
 
+        // 語音速率
+        var ttsspeed = 1;
+        if (speed === 'slow') {
+            ttsspeed = 0.24;
+            replay = 5;
+        }
+
         var audio = document.createElement('audio');
 
         audio.addEventListener('error', audioError);
 
-        audio.src = "https://translate.google.com.tw/translate_tts?ie=UTF-8&tl="+tl+"&q=" + encodeURIComponent(q);
+        audio.addEventListener('ended', function() {
+            playCount++;
+            // 循環播放
+            if (replay > 0 && (playCount < replay)) {
+                audio.play();
+            }
+        });
+
+        audio.src = "https://translate.google.com.tw/translate_tts?ie=UTF-8&tl="+tl+"&q=" + encodeURIComponent(q) + '&ttsspeed=' + ttsspeed;
         var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
         if (canPlayMP3) {
             audio.id = 'say';
@@ -228,7 +245,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
     });
 
     chrome.contextMenus.create({
-        "title": "Apple小姐-英語發音",
+        "title": "Google小姐-英語發音(慢速) *5",
         "parentId": "parent",
         "id": "child5",
         contexts: ['selection']
