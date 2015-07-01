@@ -3,7 +3,7 @@
 function onClickHandler(info, tab) {
     console.log(info);
 
-    playCount = 0;
+    playCount = 0, replay = 0;
     var q = info.selectionText;
 
     if (info.menuItemId === 'child1') {
