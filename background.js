@@ -2,59 +2,61 @@
 
 function onClickHandler(info, tab) {
     console.log(info);
+
     playCount = 0;
     var q = info.selectionText;
+
     if (info.menuItemId === 'child1') {
-		console.log("中翻英");
-		chrome.tabs.create(translate(q, 'zh-TW', 'en'));
+        console.log("中翻英");
+        chrome.tabs.create(translate(q, 'zh-TW', 'en'));
     } else if (info.menuItemId === 'child2') {
-		console.log("英翻中");
-		chrome.tabs.create(translate(q, 'en', 'zh-TW'));
+        console.log("英翻中");
+        chrome.tabs.create(translate(q, 'en', 'zh-TW'));
     } else if (info.menuItemId === 'child3') {
-		console.log("TTS API 英語語音 轉換");
+        console.log("TTS API 英語語音 轉換");
         sayByTTS(q);
     } else if (info.menuItemId === 'child4') {
         console.log("Google 英語語音 轉換");
-        sayByGoogle(q,'en','normal');
+        sayByGoogle(q, 'en', 'normal');
     } else if (info.menuItemId === 'child5') {
         console.log("Google 英語語音(慢速) 轉換 *5");
-        sayByGoogle(q,'en','slow');
+        sayByGoogle(q, 'en', 'slow');
     } else if (info.menuItemId === 'child6') {
         console.log("Google 國語語音 轉換");
-        sayByGoogle(q,'zh-TW');
+        sayByGoogle(q, 'zh-TW');
     }
 }
 
 function translate(q, s, t) {
-	var q = encodeURIComponent(q);
-	//var url = "https://script.google.com/macros/s/AKfycbzVbbioKRcPimW2ZGN0kAEZKgDSqV2bZ44GIr6HDvQOy4lcpeM/exec?q="+q+"&source="+s+"&target="+t;
+    var q = encodeURIComponent(q);
+    //var url = "https://script.google.com/macros/s/AKfycbzVbbioKRcPimW2ZGN0kAEZKgDSqV2bZ44GIr6HDvQOy4lcpeM/exec?q="+q+"&source="+s+"&target="+t;
     var url = String.format("https://translate.google.com.tw/#{0}/{1}/{2}", s, t, q);
-	return {'url' : url};
+    return {'url' : url};
 }
 
 function sayByTTS(s, callback) {
-	if (s) {
-		// 移除先前的
-		var beforeSay = document.getElementById('say');
-		if (beforeSay !== null) {
-			beforeSay.pause();
-			beforeSay.currentTime = 0;
-			beforeSay.remove();
-		}
+    if (s) {
+        // 移除先前的
+        var beforeSay = document.getElementById('say');
+        if (beforeSay !== null) {
+            beforeSay.pause();
+            beforeSay.currentTime = 0;
+            beforeSay.remove();
+        }
 
-		var audio = document.createElement('audio');
+        var audio = document.createElement('audio');
 
         audio.addEventListener('error', audioError);
 
-		audio.src = "http://tts-api.com/tts.mp3?q=" + encodeURIComponent(s);
-		var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
-		if (canPlayMP3) {
-			audio.id = 'say';
-			document.body.appendChild(audio);
+        audio.src = "http://tts-api.com/tts.mp3?q=" + encodeURIComponent(s);
+        var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
+        if (canPlayMP3) {
+            audio.id = 'say';
+            document.body.appendChild(audio);
             audio.load();
             audio.play();
-		}
-	}
+        }
+    }
 }
 
 function sayByGoogle(q, tl, speed) {
@@ -125,7 +127,7 @@ function sayBySiri(q,tl) {
     }
 
     var request = new XMLHttpRequest();
-    var url = 'https://montanaflynn-text-to-speech.p.mashape.com/speak?text='+q;
+    var url = 'https://montanaflynn-text-to-speech.p.mashape.com/speak?text=' + q;
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
             console.log(request);
@@ -216,19 +218,19 @@ chrome.runtime.onInstalled.addListener(function (details) {
         console.log('contextMenus are create.');
     });
 
-	chrome.contextMenus.create({
-		"title": "英翻中",
-		"parentId": "parent",
-		"id": "child2",
-		contexts: ['selection']
-	});
+    chrome.contextMenus.create({
+        "title": "英翻中",
+        "parentId": "parent",
+        "id": "child2",
+        contexts: ['selection']
+    });
 
-	chrome.contextMenus.create({
-		"title": "中翻英",
-		"parentId": "parent",
-		"id": "child1",
-		contexts: ['selection']
-	});
+    chrome.contextMenus.create({
+        "title": "中翻英",
+        "parentId": "parent",
+        "id": "child1",
+        contexts: ['selection']
+    });
 
     chrome.contextMenus.create({
         "title": "TTS-英語發音",
