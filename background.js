@@ -105,7 +105,7 @@ function sayByGoogle(q, tl, speed) {
             }
         });
 
-        audio.src = "https://translate.google.com.tw/translate_tts?ie=UTF-8&tl="+tl+"&q=" + encodeURIComponent(q) + '&ttsspeed=' + ttsspeed;
+        audio.src = "https://translate.google.com.tw/translate_tts?tl="+tl+"&q=" + encodeURIComponent(q) + '&ttsspeed=' + ttsspeed;
         var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
         if (canPlayMP3) {
             audio.id = 'say';
@@ -155,6 +155,8 @@ function sayBySiri(q,tl) {
 }
 
 function audioError(e) {
+    var currentSrc = e.target.currentSrc;
+
     switch (e.target.error.code) {
         case e.target.error.MEDIA_ERR_ABORTED:
             errorMsg = 'You aborted the video playback.';
@@ -167,6 +169,9 @@ function audioError(e) {
             break;
         case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
             errorMsg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
+            alert(errorMsg);
+            chrome.tabs.create( {'url' : currentSrc});
+            return false;
             break;
         default:
             errorMsg = 'An unknown error occurred.';
