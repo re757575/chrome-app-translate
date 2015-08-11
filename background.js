@@ -24,6 +24,9 @@ function onClickHandler(info, tab) {
     } else if (info.menuItemId === 'child6') {
         console.log("Google 國語語音 轉換");
         sayByGoogle(q, 'zh-TW');
+    } else if (info.menuItemId === 'child7') {
+        console.log("VT 英語語音 轉換");
+        sayByVoiceTube(q);
     }
 }
 
@@ -154,6 +157,43 @@ function sayBySiri(q,tl) {
     request.send();
 }
 
+function sayByVoiceTube(q, tl, speed) {
+
+    if (q) {
+
+        var textlen = q.length;
+
+        // 移除先前的
+        var beforeSay = document.getElementById('say');
+        if (beforeSay !== null) {
+            beforeSay.pause();
+            beforeSay.currentTime = 0;
+            beforeSay.remove();
+        }
+
+        var audio = document.createElement('audio');
+
+        audio.addEventListener('error', audioError);
+
+        audio.addEventListener('ended', function() {
+            playCount++;
+            // 循環播放
+            if (replay > 0 && (playCount < replay)) {
+                audio.play();
+            }
+        });
+
+        audio.src = "https://tw.voicetube.com/player/" + encodeURIComponent(q) +".mp3";
+        var canPlayMP3 = (typeof audio.canPlayType === "function" && audio.canPlayType('audio/mpeg'));
+        if (canPlayMP3) {
+            audio.id = 'say';
+            document.body.appendChild(audio);
+            audio.load();
+            audio.play();
+        }
+    }
+}
+
 function audioError(e) {
     var currentSrc = e.target.currentSrc;
 
@@ -241,6 +281,13 @@ chrome.runtime.onInstalled.addListener(function (details) {
         "title": "TTS-英語發音",
         "parentId": "parent",
         "id": "child3",
+        contexts: ['selection']
+    });
+
+    chrome.contextMenus.create({
+        "title": "VT-英語發音",
+        "parentId": "parent",
+        "id": "child7",
         contexts: ['selection']
     });
 
